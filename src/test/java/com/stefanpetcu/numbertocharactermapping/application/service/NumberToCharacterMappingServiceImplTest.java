@@ -16,14 +16,24 @@ class NumberToCharacterMappingServiceImplTest {
 
     static private Stream<Arguments> inputsAndOutputsProvider() {
         return Stream.of(
-                arguments(1, List.of("a", "b", "c")),
-                arguments(12, List.of("ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf")),
-                arguments(List.of(234),
-                        List.of("dgj", "dgk", "dgl", "dhj", "dhk", "dhl", "dij", "dik", "dil",
-                                "egj", "egk", "egl", "ehj", "ehk", "ehl", "eij", "eik", "eil",
-                                "fgj", "fgk", "fgl", "fhj", "fhk", "fhl", "fij", "fik", "fil"
-                        )),
-                arguments(List.of(13579),
+                arguments(1, List.of("a", "b", "c")), // 3^1 results
+                arguments(12,
+                        List.of("ad", "ae", "af",
+                                "bd", "be", "bf",
+                                "cd", "ce", "cf"
+                        )), // 3^2 results
+                arguments(234,
+                        List.of("dgj", "dgk", "dgl",
+                                "dhj", "dhk", "dhl",
+                                "dij", "dik", "dil",
+                                "egj", "egk", "egl",
+                                "ehj", "ehk", "ehl",
+                                "eij", "eik", "eil",
+                                "fgj", "fgk", "fgl",
+                                "fhj", "fhk", "fhl",
+                                "fij", "fik", "fil"
+                        )), // 3^3 results
+                arguments(13579,
                         List.of("agmsy", "agmsz", "agms*", "agmty", "agmtz", "agmt*", "agmuy", "agmuz", "agmu*",
                                 "agnsy", "agnsz", "agns*", "agnty", "agntz", "agnt*", "agnuy", "agnuz", "agnu*",
                                 "agosy", "agosz", "agos*", "agoty", "agotz", "agot*", "agouy", "agouz", "agou*",
@@ -51,7 +61,7 @@ class NumberToCharacterMappingServiceImplTest {
                                 "cimsy", "cimsz", "cims*", "cimty", "cimtz", "cimt*", "cimuy", "cimuz", "cimu*",
                                 "cinsy", "cinsz", "cins*", "cinty", "cintz", "cint*", "cinuy", "cinuz", "cinu*",
                                 "ciosy", "ciosz", "cios*", "cioty", "ciotz", "ciot*", "ciouy", "ciouz", "ciou*"
-                        ))
+                        )) // 3^4 results
         );
     }
 
