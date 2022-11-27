@@ -12,6 +12,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class NumberToCharacterMappingServiceImplTest {
+    private static final List<DigitToCharactersRecord> digitToCharactersMap = List.of(
+            new DigitToCharactersRecord(1, 'a', 'b', 'c'),
+            new DigitToCharactersRecord(2, 'd', 'e', 'f'),
+            new DigitToCharactersRecord(3, 'g', 'h', 'i'),
+            new DigitToCharactersRecord(4, 'j', 'k', 'l'),
+            new DigitToCharactersRecord(5, 'm', 'n', 'o'),
+            new DigitToCharactersRecord(6, 'p', 'q', 'r'),
+            new DigitToCharactersRecord(7, 's', 't', 'u'),
+            new DigitToCharactersRecord(8, 'v', 'w', 'x'),
+            new DigitToCharactersRecord(9, 'y', 'z', '*')
+    );
+
     private final NumberToCharacterMappingService service = new NumberToCharacterMappingServiceImpl();
 
     static private Stream<Arguments> inputsAndOutputsProvider() {
@@ -21,6 +33,11 @@ class NumberToCharacterMappingServiceImplTest {
                         List.of("ad", "ae", "af",
                                 "bd", "be", "bf",
                                 "cd", "ce", "cf"
+                        )), // 3^2 results
+                arguments(101,
+                        List.of("aa", "ab", "ac",
+                                "ba", "bb", "bc",
+                                "ca", "cb", "cc"
                         )), // 3^2 results
                 arguments(234,
                         List.of("dgj", "dgk", "dgl",
@@ -32,6 +49,17 @@ class NumberToCharacterMappingServiceImplTest {
                                 "fgj", "fgk", "fgl",
                                 "fhj", "fhk", "fhl",
                                 "fij", "fik", "fil"
+                        )), // 3^3 results
+                arguments(1011,
+                        List.of("aaa", "aab", "aac",
+                                "aba", "abb", "abc",
+                                "aca", "acb", "acc",
+                                "baa", "bab", "bac",
+                                "bba", "bbb", "bbc",
+                                "bca", "bcb", "bcc",
+                                "caa", "cab", "cac",
+                                "cba", "cbb", "cbc",
+                                "cca", "ccb", "ccc"
                         )), // 3^3 results
                 arguments(13579,
                         List.of("agmsy", "agmsz", "agms*", "agmty", "agmtz", "agmt*", "agmuy", "agmuz", "agmu*",
@@ -68,18 +96,6 @@ class NumberToCharacterMappingServiceImplTest {
     @ParameterizedTest
     @MethodSource("inputsAndOutputsProvider")
     void getCharacterCombinationsFor_returns_combinations_of_letters_given_a_number(Integer inputNumber, List<String> expectedOutput) {
-        var digitToCharactersMap = List.of(
-                new DigitToCharactersRecord(1, 'a', 'b', 'c'),
-                new DigitToCharactersRecord(2, 'd', 'e', 'f'),
-                new DigitToCharactersRecord(3, 'g', 'h', 'i'),
-                new DigitToCharactersRecord(4, 'j', 'k', 'l'),
-                new DigitToCharactersRecord(5, 'm', 'n', 'o'),
-                new DigitToCharactersRecord(6, 'p', 'q', 'r'),
-                new DigitToCharactersRecord(7, 's', 't', 'u'),
-                new DigitToCharactersRecord(8, 'v', 'w', 'x'),
-                new DigitToCharactersRecord(9, 'y', 'z', '*')
-        );
-
         assertEquals(expectedOutput, service.getCharacterCombinationsFor(digitToCharactersMap, inputNumber));
     }
 }

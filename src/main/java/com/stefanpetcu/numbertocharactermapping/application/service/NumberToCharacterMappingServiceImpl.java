@@ -2,41 +2,50 @@ package com.stefanpetcu.numbertocharactermapping.application.service;
 
 import com.stefanpetcu.numbertocharactermapping.application.dto.DigitToCharactersRecord;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class NumberToCharacterMappingServiceImpl implements NumberToCharacterMappingService {
     @Override
     public List<String> getCharacterCombinationsFor(List<DigitToCharactersRecord> digitToCharactersMap, Integer number) {
-        /**
-         * TODO: in the while loop filter below, handle digits that do not exist in the map
-         *  (e.g., 0 for the map defined in {@link NumberToCharacterMappingServiceImplTest#getCharacterCombinationsFor_returns_combinations_of_letters_given_a_number}
-         */
         // 1. Create an array of the desired size, filled with empty strings.
         // 1.1 Assuming all digits are mapped to the same number of possible characters.
         var numberOfCharsPerDigit = digitToCharactersMap.get(0).characters().length;
-        // 1.2 Create an array filled with distinct instances of StringBuilder.
-        var result = Stream.generate(StringBuilder::new).limit((int) Math.pow(numberOfCharsPerDigit, String.valueOf(number).length())).toArray(StringBuilder[]::new);
-        // 1.3 Keep track of iterations to know how many times we must repeat a character.
+
+        // 1.2 Filter the relevant map records:
+        var digitsToFilterBy = number.toString().chars().mapToObj(c -> (char) c)
+                .map(c -> Integer.valueOf(String.valueOf(c))).toList();
+
+        List<DigitToCharactersRecord> filteredDigitToCharMapRecords = new ArrayList<>();
+
+        for (Integer d : digitsToFilterBy) { // This could have been simpler if we didn't want to keep duplicates.
+            digitToCharactersMap.stream().filter(r -> Objects.equals(r.digit(), d)).findFirst().ifPresent(filteredDigitToCharMapRecords::add);
+        }
+
+        // 1.3 If no digits match, return an empty list.
+        if (filteredDigitToCharMapRecords.isEmpty()) {
+            return List.of();
+        } else {
+            // 1.4 Reverse the array for the logic at point 2 to work.
+            Collections.reverse(filteredDigitToCharMapRecords);
+        }
+
+        // 1.5 Create an array filled with distinct instances of StringBuilder.
+        // The size of the array depends on the number of relevant digits.
+        var result = Stream.generate(StringBuilder::new)
+                .limit((int) Math.pow(numberOfCharsPerDigit, filteredDigitToCharMapRecords.size())).toArray(StringBuilder[]::new);
+        // 1.6 Keep track of iterations to know how many times we must repeat a character.
         var iterationNumber = 0;
 
         // 2. Add the actual strings to the previously created array.
-        while (number > 0) {
-            // 2.1 Take digits one-by-one from the end of the number.
-            var digit = number % 10;
-            number = number / 10;
-
-            // 2.2 Find the map record.
-            var mapRecord = digitToCharactersMap.stream().filter(record -> record.digit() == digit).findFirst().orElse(null);
-            assert mapRecord != null; // TODO: handle null cases (related to the TODO above).
+        for (DigitToCharactersRecord record : filteredDigitToCharMapRecords) {
             var repeatEachCharacter = (int) Math.pow(numberOfCharsPerDigit, iterationNumber);
 
-            // 2.3 Build the final result.
+            // 2.1 Build the final result.
             var i = 0;
             var repeated = 0;
             for (StringBuilder stringBuilder : result) {
-                stringBuilder.insert(0, mapRecord.characters()[i]);
+                stringBuilder.insert(0, record.characters()[i]);
                 repeated++;
 
                 if (repeated == repeatEachCharacter) {
